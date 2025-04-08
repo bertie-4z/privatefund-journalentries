@@ -10,7 +10,7 @@ This example is built upon 'View B' of: https://viewpoint.pwc.com/dt/us/en/pwc/a
 
 Given following hypothetical data on ABC company:
 
-|Month|ABC.XNYE price|ABC.XNYE shares|XR HKD/USD |
+|Month|ABC.XNYS price|ABC.XNYS shares|XR HKD/USD |
 |:---:|         ---: |          ---: |      ---: |
 |0    |11 USD        |150 shares     |7.1        |
 |1    |13 USD        |150 shares     |7.3        |
