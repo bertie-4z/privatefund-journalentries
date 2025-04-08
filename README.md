@@ -88,8 +88,9 @@ Glossary:
 |SCI_I_RGLFA_USD               |SCI; Income; Realized Gain/Loss on Financial Assets; USD account|
 
 
+## Spreadsheet formatting guide
 
-
+[Formatting guidelines for this project](spreadsheet_formatting.png)
 
 
 
