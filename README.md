@@ -90,7 +90,6 @@ Glossary:
 
 ## Spreadsheet formatting guide
 
-![Formatting guidelines for this project](spreadsheet_formatting.png)
 
 
 
