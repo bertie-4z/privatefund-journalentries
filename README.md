@@ -4,7 +4,7 @@ Extracts relevant transaction information and converts to accounting journal ent
 
 Returns a Statement of Comprehensive Income (denoted SCI), Statement of Financial Position (SFP), Statement of Cash Flows (SCF), Statement of Changes in Net Asset Value (SCNAV), and Investment Schedule (IS); the IS is considered a more specific subset of the SFP, detailing positions in specific securities at the end of the recording period
 
-## AFS equity asset journal entry example
+## AFS financial asset journal entry example
 
 This example is built upon 'View B' of: https://viewpoint.pwc.com/dt/us/en/pwc/accounting_guides/loans_and_investment/loans_and_investment_US/chapter_3_accounting__1_US/34_accounting_for_de_US.html#pwc-topic.dita_1609305310049078
 
