@@ -1,6 +1,6 @@
 # privatefund-journalentries
 
-Extracts relevant transaction information and converts to accounting journal entries in accordance with IFRS; assumed entity is a private fund
+Extracts relevant transaction information and converts to accounting journal entries in accordance with IFRS; assumed entity is a private investment fund 
 
 Returns a Statement of Comprehensive Income (denoted SCI), Statement of Financial Position (SFP), Statement of Cash Flows (SCF), Statement of Changes in Net Asset Value (SCNAV), and Investment Schedule (IS); the IS is considered a more specific subset of the SFP, detailing positions in specific securities at the end of the recording period
 
