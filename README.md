@@ -4,6 +4,39 @@ Extracts relevant transaction information and converts to accounting journal ent
 
 Returns a Statement of Comprehensive Income (denoted SCI), Statement of Financial Position (SFP), Statement of Cash Flows (SCF), Statement of Changes in Net Asset Value (SCNAV), and Investment Schedule (IS); the IS is considered a more specific subset of the SFP, detailing positions in specific securities at the end of the recording period
 
+## Transaction records template
+
+Transactions which are fully mapped are recorded in a pandas dataframe with the following columns: Index(['Init_date',
+       'Settle_date',
+       'Institution',
+       'Account_name',
+       'Account_num',
+       'Description',
+       'Asset_type',
+       'Security_code',
+       'Security_name',
+       'Transaction_value',
+       'Trans_value_curr',
+       'Trans_quantity',
+       'Trans_price',
+       'Trans_price_curr',
+       'DR_account_0',
+       'DR_value_0',
+       'CR_account_0',
+       'CR_value_0',
+       'DR_account_1',
+       'DR_value_1',
+       'CR_account_1',
+       'CR_value_1',
+       'DR_account_2',
+       'DR_value_2',
+       'CR_account_2',
+       'CR_value_2',
+      ], dtype='object')
+
+The initial transactions (pre debit/credit journal entry mapping) are recorded in a spreadsheet with the same columns as headers minus the DR and CR column names. 
+
+
 ## AFS financial asset journal entry example
 
 This example is built upon 'View B' of: https://viewpoint.pwc.com/dt/us/en/pwc/accounting_guides/loans_and_investment/loans_and_investment_US/chapter_3_accounting__1_US/34_accounting_for_de_US.html#pwc-topic.dita_1609305310049078
