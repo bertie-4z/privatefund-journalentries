@@ -17,7 +17,7 @@ Given following hypothetical data on ABC company:
 |2    |9 USD         |150 shares     |7.7        |
 |3    |12 USD        |150 shares     |6.7        |
 
-Assume our presentation AND functional currency are both in HKD. 
+Assume our presentation AND functional currency are both in **HKD**. 
 
 
 Then month 0 journal entries would be: 
