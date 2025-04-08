@@ -6,7 +6,9 @@ Returns a Statement of Comprehensive Income (denoted SCI), Statement of Financia
 
 ## Transaction records template
 
-Transactions which are fully mapped are recorded in a pandas dataframe with the following columns: Index(['Init_date',
+Transactions which are fully mapped are recorded in a pandas dataframe with the following columns: 
+
+Index(['Init_date',
        'Settle_date',
        'Institution',
        'Account_name',
