@@ -64,16 +64,16 @@ Assuming sale at the end of month 3, the journal entries would be:
 |:---:| :---                          |---:   | :---   | :---     |
 |DR   |SCI_OCI_UGLFA_ΔFV_USD          |1,800  |USD     |Sold 150 shares * 12 USD per share (average selling price)|
 |CR   |  SFP_A_FA_E_USD_CUM_UGLΔFV    |1,650  |USD     |Sold 150 shares * 11 USD per share (use average book price instead of FIFO or LIFO; is this a variable you should retain as a function/method input param?) |
-|CR   |  SCI_I_RGLFA_USD              |150    |USD     |(12 - 11 USD) * 150 Shares|
-|DR   |SFP_A_FA_E_USD_CUM_UGLΔFV      |300    |USD     |Had a 300 USD CR (cum. loss) balance at end of last period/beginning of this period; actual _net_ carrying value of 1,350 USD; close out pro rata portion (150 shares sold/150 shares held * 300 USD CR balance)|
+|CR   |  SCI_I_RGLFA_USD              |150    |USD     |(12 USD - 11 USD) * 150 Shares|
+|DR   |SFP_A_FA_E_USD_CUM_UGLΔFV      |300    |USD     |Had a 300 USD CR (cum. loss) balance at end of last period/beginning of this period; actual _net_ carrying value of 1,350 USD; close out _pro rata_ portion (150 shares sold/150 shares held * 300 USD CR balance)|
 |CR   |  SCI_OCI_UGLFA_ΔFV_USD        |300    |USD     |Close out the outstanding OCI of SCI, makes no difference towards the end of SCNAV; this entry essentially moves the unrealized portion (OCI) of the gain to the realized portion (income)|
 
 Assuming there is only 1,650 USD (carrying amount at last period of record) + 300 USD - 600 USD = 1,350 HKD worth of net assets in the previous period, the NAV XR adjustment would be ΔXR * NA_{t0} = (6.7 - 7.7 HKD/USD) * 1,350 USD =  -1,350 HKD
 
 Then NAV this period would first decrease by the 1,350 HKD XR adjustment, then increase by _450_ USD * 6.7 HKD/USD = 3,015 HKD
 
-Where did the _450_ USD figure come from? At point of sale, assets went up (cash) by 1,800 USD and down (financial assets book) by 1,650 USD and then up (financial asset adjunct) by 300 USD again for net 450 USD; 
-NAV (equity) went up by 150 and 300 for net 450 through SCI carry-over
+Where did the 450 USD figure come from? At point of sale, assets went up (cash) by 1,800 USD and down (financial assets book) by 1,650 USD and then up (financial asset adjunct) by 300 USD again for net up by 450 USD; 
+NAV (equity) went up by 150 USD and 300 USD for net 450 USD through SCI carry-over
 
 End period NAV should be 10,395 HKD - 1,350 HKD + 3,015 HKD = 12,060 HKD
 
