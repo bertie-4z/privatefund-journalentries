@@ -48,6 +48,22 @@ class TransactionJEM:
         self.je_cols = self.df[[col for col in self.df.columns if col.startswith('DR') or col.startswith('CR')]] ## journal entry columns
         self.fillempty = fillempty ## empty string '' or None
 
+    def concat_je_rows(*dfs): ## variable-length arguments, *args 
+        """
+        Use as: 
+            df_combined = concat_je_rows(df1, df2, df3, df4, ...)
+                or
+            df_list = [df1, df2, df3]
+            df_combined = concat_je_rows(*df_list)
+        """
+        merged_df = pd.concat(dfs, axis=1, sort=False)
+        value_cols = [col for col in merged_df.columns if 'value' in col]
+        merged_df[value_cols] = merged_df[value_cols].applymap(
+            lambda x: float(f"{x:.2f}") if isinstance(x, (int, float)) else x
+        )
+        merged_df = merged_df.fillna(self.fillempty)
+        return merged_df
+    
     def func_div_cash_rcvd(self, idx): ## dividend cash received ## 股息现金存入
         transval = self.df.iloc[idx]['Transaction_value']
         transcurr = self.df.iloc[idx]['Trans_value_curr']
@@ -122,36 +138,32 @@ class TransactionJEM:
                                                 (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0,
                                                 f'SCI_OCI_UGLFA_ΔFV_{transcurr}',
                                                 (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0]]
-                                      )
-        
-        elif 
-        
+                                      )        
         ################
         ################
-
-
         if rgl_t1 == 1: ## realized gain, so we credit the realized gain
-            je_dfrow = pd.DataFrame(index=[idx],
+            je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1', 
                                             'DR_account_2', 'DR_value_2', 'CR_account_2', 'CR_value_2',],
                                     data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0),
                                             self.fillempty, self.fillempty, f'SCI_I_RGLFA_{transcurr}', (transval - (transquan * avgbp_t0))]]
                                     )
         elif rgl_t1 == -1: ## realized loss, so we debit the realized loss
-            je_dfrow = pd.DataFrame(index=[idx],
+            je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1', 
                                             'DR_account_2', 'DR_value_2', 'CR_account_2', 'CR_value_2',],
                                     data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0),
                                             f'SCI_I_RGLFA_{transcurr}', (transval - (transquan * avgbp_t0)), self.fillempty, self.fillempty]]
                                     )
         else: ## rgl_t1 == 0; ## breakeven, so we do not need to record a realized gain/loss
-            je_dfrow = pd.DataFrame(index=[idx],
+            je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1'],
                                     data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0)]]
                                     )
 
-
-        
+        merged_je_rows = self.concat_je_rows(je_dfrow_0,je_dfrow_1)
+        return merged_je_rows
+    
     def func_open_FALC
     
     
@@ -166,21 +178,7 @@ class TransactionJEM:
         ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
     
     
-    def concat_je_rows(*dfs): ## variable-length arguments, *args 
-        """
-        Use as: 
-            df_combined = concat_je_rows(df1, df2, df3, df4, ...)
-                or
-            df_list = [df1, df2, df3]
-            df_combined = concat_je_rows(*df_list)
-        """
-        merged_df = pd.concat(dfs, axis=0, sort=False)
-        value_cols = [col for col in merged_df.columns if 'value' in col]
-        merged_df[value_cols] = merged_df[value_cols].applymap(
-            lambda x: float(f"{x:.2f}") if isinstance(x, (int, float)) else x
-        )
-        merged_df = merged_df.fillna(self.fillempty)
-        return merged_df
+
 
 
     def tabulate_ledgers(self):
