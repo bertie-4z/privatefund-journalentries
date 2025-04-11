@@ -101,7 +101,7 @@ class TransactionJEM:
         transval = self.df.iloc[idx]['Transaction_value']
         transcurr = self.df.iloc[idx]['Trans_value_curr']
         transquan = self.df.iloc[idx]['Trans_quantity']
-
+        
         ugl_t0 = 0 ## unrealized g/l for period t0 (last period); 1 for gain DR, -1 for loss CR, 0 for breakeven
         if SFP_A_FA_E_USD_CUM_UGLΔFV_t0 > 0:
             ugl_t0 = 1 
@@ -164,15 +164,54 @@ class TransactionJEM:
         merged_je_rows = self.concat_je_rows(je_dfrow_0,je_dfrow_1)
         return merged_je_rows
     
-    def func_open_FALC
+    def func_open_FAOL(self, idx, cp):
+        if not isinstance(cp, str):
+            raise TypeError(f"'cp' must be a string, got {type(cp).__name__}")
+        cp = cp.lower()  # Normalize
+        if cp in ['c', 'call','认购','购']:
+            return 'call'
+        elif cp in ['p', 'put','认沽','沽']:
+            return 'put'
+        else:
+            raise ValueError(f"Invalid cp value: {cp}")
+        ####################
+        transval = self.df.iloc[idx]['Transaction_value']
+        transcurr = self.df.iloc[idx]['Trans_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
+                                data=[[f'SFP_A_FA_D_{transcurr}_BV', transval, f'SCF_OA_PPI_{transcurr}',transval]]
+                                )
+        return je_dfrow      
+
+    def func_close_FAOL(self, idx, cp, exp):
+        if not isinstance(cp, str):
+            raise TypeError(f"'cp' must be a string, got {type(cp).__name__}")
+        cp = cp.lower()  # Normalize
+        if cp in ['c', 'call','认购','购']:
+            return 'call'
+        elif cp in ['p', 'put','认沽','沽']:
+            return 'put'
+        else:
+            raise ValueError(f"Invalid cp value: {cp}")
+        if not isinstance(exp, bool):
+            raise TypeError(f"'exp' must be a boolean, got {type(exp).__name__}")
+        ####################
+        transval = self.df.iloc[idx]['Transaction_value']
+        transcurr = self.df.iloc[idx]['Trans_value_curr']
+        
+
+
     
     
-    
-    
-    
-    
-    
-    
+    def func_open_FAOS(self, idx, cp):
+        ## prepaid cash, future liability 
+        
+        
+        
+        
+        
+        
+        
     def func_FAE_mtmadj(self, df): 
         ## this does not require iterating through the df
         ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
