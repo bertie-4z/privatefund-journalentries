@@ -65,8 +65,9 @@ class TransactionJEM:
         return merged_df
     
     def func_div_cash_rcvd(self, idx): ## dividend cash received ## 股息现金存入
-        transval = self.df.iloc[idx]['Transaction_value']
-        transcurr = self.df.iloc[idx]['Trans_value_curr']
+        transaction = self.df.iloc[idx]
+        transval = transaction['Transaction_value']
+        transcurr = transaction['Trans_value_curr']
         je_dfrow = pd.DataFrame(index=[idx],
                                 columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
                                 data=[[f'SCF_OA_DRC_{transcurr}', transval, f'SCI_I_DI_{transcurr}', transval]],
@@ -74,8 +75,9 @@ class TransactionJEM:
         return je_dfrow
         
     def func_int_cash_rcvd(self, idx): ## interest cash received ## 利息现金存入
-        transval = self.df.iloc[idx]['Transaction_value']
-        transcurr = self.df.iloc[idx]['Trans_value_curr']
+        transaction = self.df.iloc[idx]
+        transval = transaction['Transaction_value']
+        transcurr = transaction['Trans_value_curr']
         je_dfrow = pd.DataFrame(index=[idx],
                                 columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
                                 data=[[f'SCF_OA_IRC_{transcurr}', transval, f'SCI_I_II_{transcurr}', transval]],
@@ -83,11 +85,13 @@ class TransactionJEM:
         return je_dfrow
 
     def func_open_FAE(self, idx): ## open financial asset equity ## 建仓金融资产权益
-        transval = self.df.iloc[idx]['Transaction_value']
-        transcurr = self.df.iloc[idx]['Trans_value_curr']
+        transaction = self.df.iloc[idx]
+        transval = transaction['Transaction_value']
+        transcurr = transaction['Trans_value_curr']
+        sec_code = transaction['Security_code']
         je_dfrow = pd.DataFrame(index=[idx],
                                 columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
-                                data=[[f'SFP_A_FA_E_{transcurr}_BV', transval, f'SCF_OA_PPI_{transcurr}',transval]]
+                                data=[[f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', transval, f'SCF_OA_PPI_{transcurr}_{sec_code}',transval]]
                                 )
         return je_dfrow      
 
@@ -98,9 +102,11 @@ class TransactionJEM:
         ### we need to close this account out by the pro rata portion; positive value implies a DR balance and negative value implies a CR balance
         ## the 3 inputs avgbp_t0, unitsheld_t0, SFP_A_FA_E_USD_CUM_UGLΔFV_t0 must be sourced from the previous period's Investment Schedule
 
-        transval = self.df.iloc[idx]['Transaction_value']
-        transcurr = self.df.iloc[idx]['Trans_value_curr']
-        transquan = self.df.iloc[idx]['Trans_quantity']
+        transaction = self.df.iloc[idx]
+        transval = transaction['Transaction_value']
+        transcurr = transaction['Trans_value_curr']
+        sec_code = transaction['Security_code']
+        transquan = transaction['Trans_quantity']
         
         ugl_t0 = 0 ## unrealized g/l for period t0 (last period); 1 for gain DR, -1 for loss CR, 0 for breakeven
         if SFP_A_FA_E_USD_CUM_UGLΔFV_t0 > 0:
@@ -122,9 +128,9 @@ class TransactionJEM:
                                                 'DR_value_0', 
                                                 'CR_account_0', 
                                                 'CR_value_0'],
-                                        data=[[f'SCI_OCI_UGLFA_ΔFV_{transcurr}',
+                                        data=[[f'SCI_OCI_UGLFA_ΔFV_{transcurr}_{sec_code}',
                                             (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0,
-                                            f'SFP_A_FA_E_{transcurr}_CUM_UGLΔFV',
+                                            f'SFP_A_FA_E_{transcurr}_CUM_UGLΔFV_{sec_code}',
                                             (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0]]
                                       )
 
@@ -134,9 +140,9 @@ class TransactionJEM:
                                                 'DR_value_0', 
                                                 'CR_account_0', 
                                                 'CR_value_0'],
-                                        data=[[f'SFP_A_FA_E_{transcurr}_CUM_UGLΔFV',
+                                        data=[[f'SFP_A_FA_E_{transcurr}_CUM_UGLΔFV_{sec_code}',
                                                 (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0,
-                                                f'SCI_OCI_UGLFA_ΔFV_{transcurr}',
+                                                f'SCI_OCI_UGLFA_ΔFV_{transcurr}_{sec_code}',
                                                 (transquan / unitsheld_t0) * SFP_A_FA_E_USD_CUM_UGLΔFV_t0]]
                                       )        
         ################
@@ -145,20 +151,20 @@ class TransactionJEM:
             je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1', 
                                             'DR_account_2', 'DR_value_2', 'CR_account_2', 'CR_value_2',],
-                                    data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0),
+                                    data=[[f'SCF_OA_PSI_{transcurr}_{sec_code}', transval, f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', (transquan * avgbp_t0),
                                             self.fillempty, self.fillempty, f'SCI_I_RGLFA_{transcurr}', (transval - (transquan * avgbp_t0))]]
                                     )
         elif rgl_t1 == -1: ## realized loss, so we debit the realized loss
             je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1', 
                                             'DR_account_2', 'DR_value_2', 'CR_account_2', 'CR_value_2',],
-                                    data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0),
+                                    data=[[f'SCF_OA_PSI_{transcurr}_{sec_code}', transval, f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', (transquan * avgbp_t0),
                                             f'SCI_I_RGLFA_{transcurr}', (transval - (transquan * avgbp_t0)), self.fillempty, self.fillempty]]
                                     )
         else: ## rgl_t1 == 0; ## breakeven, so we do not need to record a realized gain/loss
             je_dfrow_1 = pd.DataFrame(index=[idx],
                                     columns=['DR_account_1', 'DR_value_1', 'CR_account_1', 'CR_value_1'],
-                                    data=[[f'SCF_OA_PSI_{transcurr}', transval, f'SFP_A_FA_E_{transcurr}_BV', (transquan * avgbp_t0)]]
+                                    data=[[f'SCF_OA_PSI_{transcurr}_{sec_code}', transval, f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', (transquan * avgbp_t0)]]
                                     )
 
         merged_je_rows = self.concat_je_rows(je_dfrow_0,je_dfrow_1)
