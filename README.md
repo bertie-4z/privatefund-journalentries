@@ -57,10 +57,10 @@ Assume our presentation AND functional currency are both in **HKD**.
 
 Then month 0 journal entries would be: 
 
-|DR/CR|Account                        |Value|Currency|Commentary|
-|:---:| :---                          |---: | :---   | :---     |
-|DR   |SFP_A_FA_E_USD_BV              |1650 |USD     |This is actually specific to the security, eg SFP_A_FA_E_USD_BV_ABC.XNYS, but this level of specificity is only in the IS, and what shows up on the financial statements is still SFP_A_FA_E_USD_BV consolidated across denoted in the same foreign currency. securities |
-|CR   |  SFP_A_CCE_USD                |1650 |USD     |          |
+|DR/CR|Account                           |Value|Currency|Commentary|
+|:---:| :---                             |---: | :---   | :---     |
+|DR   |SFP_A_FA_E_USD_BV                 |1650 |USD     |This is actually specific to the security, eg SFP_A_FA_E_USD_BV_ABC.XNYS, but this level of specificity is only in the IS, and what shows up on the financial statements is still SFP_A_FA_E_USD_BV consolidated across denoted in the same foreign currency. securities |
+|CR   |  SFP_A_CCE_USD (SCF_OA_PPI_USD) |1650 |USD     |          |
 
 Then the NAV at the end of the month 0 would change by: 1650 USD * 7.1 HKD/USD = 11,715 HKD 
 
@@ -97,7 +97,7 @@ Assuming sale at the end of month 3, the journal entries would be:
 
 |DR/CR|Account                        |Value  |Currency|Commentary|
 |:---:| :---                          |---:   | :---   | :---     |
-|DR   |SCI_OCI_UGLFA_ΔFV_USD          |1,800  |USD     |Sold 150 shares * 12 USD per share (average selling price)|
+|DR   |SFP_A_CCE_USD (SCF_OA_PSI_USD) |1,800  |USD     |Sold 150 shares * 12 USD per share (average selling price)|
 |CR   |  SFP_A_FA_E_USD_CUM_UGLΔFV    |1,650  |USD     |Sold 150 shares * 11 USD per share (use average book price instead of FIFO or LIFO; is this a variable you should retain as a function/method input param?) |
 |CR   |  SCI_I_RGLFA_USD              |150    |USD     |(12 USD - 11 USD) * 150 Shares|
 |DR   |SFP_A_FA_E_USD_CUM_UGLΔFV      |300    |USD     |Had a 300 USD CR (cum. loss) balance at end of last period/beginning of this period; actual _net_ carrying value of 1,350 USD; close out _pro rata_ portion (150 shares sold/150 shares held * 300 USD CR balance)|
@@ -118,6 +118,8 @@ Glossary:
 |------------------------------|------------|
 |SFP_A_FA_E_USD_BV             |SFP; Assets; Financial Assets; Equity; USD account; Book Value|
 |SFP_A_CCE_USD                 |SFP; Assets; Cash & Cash Equivalents; USD account|
+|SCF_OA_PPI_USD                |SCF; Operating Activities; Payments for Purchases of Investments|
+|SCF_OA_PSI_USD                |SCF; Operating Activities; Proceeds on Sales of Investments|
 |SFP_A_FA_E_USD_CUM_UGLΔFV     |SFP; Assets; Financial Assets; Equity; USD account; Cumulative Urealized Gain/Loss changes to Fair Value|
 |SCI_OCI_UGLFA_ΔFV_USD         |SCI; Other Comprehensive Income; Unrealized Gain/Loss on Financial Assets; Changes to Fair Value; USD account |
 |SCI_I_RGLFA_USD               |SCI; Income; Realized Gain/Loss on Financial Assets; USD account|
