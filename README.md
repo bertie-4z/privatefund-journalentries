@@ -54,6 +54,8 @@ Given following hypothetical data on ABC company:
 
 Assume our presentation AND functional currency are both in **HKD**. 
 
+I will use a custom, more intuitive format for exchange rates (XR) labels. Instead of BaseCurrencyCode.QuoteCurrencyCode as is convention, XR formats will be as follows: 
+QuoteCurrencyCode/BaseCurrencyCode
 
 Then month 0 journal entries would be: 
 
