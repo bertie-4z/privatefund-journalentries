@@ -208,8 +208,26 @@ class TransactionJEM:
         ## prepaid cash, future liability 
         
         
-        
-        
+    def func_curr_tf(self, idx):
+        transaction = self.df.iloc[idx]
+        quote_val = transaction['Trxn_value'] ## quote (end-result) currency value
+        quote_curr = transaction['Trxn_value_curr'] ## quote (end-result) currency
+        base_val = transaction['Trxn_quantity'] ## base (original) currency value
+        base_curr = transaction['Trxn_quantity_unit'] ## base (original) currency
+        xrate = transaction['Trxn_price'] ## exchange rate 
+        xrate_curr = transaction['Trxn_price_curr'] ## exchange rate currency codes, QUOTE/BASE
+
+        if ## condition for gain in currency translation
+                je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'CR_account_1', 'CR_value_1'],
+                                data=[[f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', transval, f'SCF_OA_PPI_{transcurr}_{sec_code}',transval]]
+                                )
+        if ## condition for loss in currency translation    
+            je_dfrow = pd.DataFrame(index=[idx],
+                                    columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'DR_account_1', 'DR_value_1'],
+                                    data=[[f'SFP_A_FA_E_{transcurr}_BV_{sec_code}', transval, f'SCF_OA_PPI_{transcurr}_{sec_code}',transval]]
+                                    )
+        return je_dfrow      
         
         
         
@@ -217,8 +235,4 @@ class TransactionJEM:
         ## this does not require iterating through the df
         ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
     
-    
-
-
-
     def tabulate_ledgers(self):
