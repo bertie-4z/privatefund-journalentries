@@ -17,11 +17,11 @@ Index(['Init_date',
        'Asset_type',
        'Security_code',
        'Security_name',
-       'Transaction_value',
-       'Trans_value_curr',
-       'Trans_quantity',
-       'Trans_price',
-       'Trans_price_curr',
+       'Trxn_value',
+       'Trxn_value_curr',
+       'Trxn_quantity',
+       'Trxn_price',
+       'Trxn_price_curr',
        'DR_account_0',
        'DR_value_0',
        'CR_account_0',
@@ -37,6 +37,7 @@ Index(['Init_date',
       ], dtype='object')
 
 The initial transactions (pre debit/credit journal entry mapping) are recorded in a spreadsheet with the same columns as headers minus the DR and CR column names. 
+The abbreviation used for 'Transaction' is 'trxn' rather than the more conventional 'txn'. This is done to avoid potential confusion with 'tax'. 
 
 
 ## AFS financial asset journal entry example
