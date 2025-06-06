@@ -170,17 +170,63 @@ class TransactionJEM:
         merged_je_rows = self.concat_je_rows(je_dfrow_0,je_dfrow_1)
         return merged_je_rows
     
-    def func_open_FAOL(self, idx, cp):
-        transaction = self.df.iloc[idx]
-        trxn_val = transaction['Trxn_value']
-        trxn_curr = transaction['Trxn_value_curr']
-        sec_code = transaction['Security_code']
+    # def func_open_FAOL(self, idx):
+    #     transaction = self.df.iloc[idx]
+    #     transval = transaction['Transaction_value']
+    #     transcurr = transaction['Trans_value_curr']
+    #     sec_code = transaction['Security_code']
         
-        je_dfrow = pd.DataFrame(index=[idx],
-                                columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
-                                data=[[f'SFP_A_FA_D_{trxn_curr}_BV_{sec_code}', trxn_val, f'SCF_OA_PPI_{trxn_curr}_{sec_code}',trxn_val]]
-                                )
-        return je_dfrow      
+    #     je_dfrow = pd.DataFrame(index=[idx],
+    #                             columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
+    #                             data=[[f'SFP_A_FA_D_{transcurr}_BV_{sec_code}', transval, f'SCF_OA_PPI_{transcurr}_{sec_code}',transval]]
+    #                             )
+    #     return je_dfrow      
+
+    # def func_close_FAOL(self, idx, cp, ae, cs, exp, exe):
+    #     if not isinstance(cp, str):
+    #         raise TypeError(f"'cp' must be a string, got {type(cp).__name__}")
+        
+    #     if not isinstance(cs, bool): ## cash settlement; standard equity options are not cash-settled—actual shares are transferred in an exercise/assignment. 
+    #         ## Options on broad-based indexes, however, are cash-settled in an amount equal to the difference between the settlement price of the index and the strike price of the option times the contract multiplier.
+    #         raise TypeError(f"'exp' must be a boolean, got {type(cs).__name__}")
+
+    #     if not isinstance(exp, bool):
+    #         raise TypeError(f"'exp' must be a boolean, got {type(exp).__name__}")
+       
+    #     if not isinstance(exe, bool):
+    #         raise TypeError(f"'exp' must be a boolean, got {type(exe).__name__}")
+        
+    #     cp = cp.lower()  # Normalize
+    #     if cp in ['c', 'call','认购','购']:
+    #         cp = 'call'
+    #     elif cp in ['p', 'put','认沽','沽']:
+    #         cp = 'put'
+    #     else:
+    #         raise ValueError(f"Invalid cp value: {cp}")       
+        
+    #     ae = ae.lower() ## https://www.schwab.com/learn/story/options-expiration-definitions-checklist-more ## https://licai.cofool.com/ask/qa_1414653.html
+    #     if ae in ['a', 'american','美式','美']: ## Standard U.S. equity options (options on single-name stocks) are American-style. 
+    #         ae = 'american' ## 属于美式期权的品种有橡胶期权、铝期权、锌期权、豆粕期权、玉米期权、铁矿石期权、石油气期权、聚丙烯期权、聚氯乙烯期权、聚乙烯期权、白糖期权、棉花期权、PTA期权、甲醇期权、菜籽粕期权和动力煤期权。
+    #     elif ae in ['e', 'european','euro','欧式','欧']: ## Most options on stock indexes, such as the Nasdaq-100® (NDX), S&P 500® (SPX), and Russell 2000® (RUT), are European-style.
+    #         ae = 'european' ## 欧式期权中包括的就是中金所股指期货期权为欧式，50ETF期权、沪市300ETF期权、深市300ETF期权、沪深300股指期权、黄金期权、铜期权
+    #     else:
+    #         raise ValueError(f"Invalid cp value: {cp}")      
+    #     ####################
+    #     transaction = self.df.iloc[idx]
+    #     transval = transaction['Transaction_value']
+    #     transcurr = transaction['Trans_value_curr']
+    #     sec_code = transaction['Security_code']
+    #     if exp and exe: ## long option position exercised at expiration; ITM
+    #         if cs:
+            
+    #         if not cs:
+
+
+    #     elif exp and not exe: ## long option position closed because of expiration; OTM
+        
+    #     elif not exp and exe and ae == 'american': ## long option position closed because of exercise before expiration
+
+    #     else: ## closed out neither from expiration nor exercise; sold option contract itself; similar to func_close_FAE()    
 
     def func_close_FAOL(self, idx, cp, exp):
         if not isinstance(cp, str):
@@ -206,7 +252,20 @@ class TransactionJEM:
     
     def func_open_FAOS(self, idx, cp):
         ## prepaid cash, future liability 
-        
+
+    def func_misc_fee(self, idx): ## miscellaneous fees ## 杂费 ## bank fee, ADR fee, transfer fee, custodian fee
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        description = transaction['Description']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCI_E_OF_{trxn_curr}', 
+                                       trxn_val, 
+                                       f'SCF_OA_OEP_{trxn_curr}', 
+                                       trxn_val]],
+                                )
+        return je_dfrow, description
         
     def func_curr_tf(self, idx, xr_lastmonth):
         transaction = self.df.iloc[idx]
@@ -239,7 +298,7 @@ class TransactionJEM:
         
         
         
-    def func_FAE_mtmadj(self, df): 
+    def func_FAE_mtmadj(self, df):  ## month-to-month adjustments ## 月末调整
         ## this does not require iterating through the df
         ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
     
