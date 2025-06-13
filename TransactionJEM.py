@@ -280,8 +280,8 @@ class TransactionJEM:
         xr_lastmonth = self.XR0_df.loc[quote_curr, base_curr]
         
         if xrate > xr_lastmonth: ## condition for gain in currency translation
-            gain_in_Qcurr = (xrate - xr_lastmonth) * base_val
-            gain_in_Bcurr = gain_in_Qcurr / xr_lastmonth
+            gain_in_Qcurr = (xrate - xr_lastmonth) * base_val ## gain amount stated in the Quote currency
+            gain_in_Bcurr = gain_in_Qcurr / xr_lastmonth ## gain amount stated in the Base currency
             if quote_curr == presentation_curr:
                 gain_recorded = gain_in_Qcurr
             elif base_curr == presentation_curr:
@@ -297,15 +297,28 @@ class TransactionJEM:
                                        f'SCI_XRPLFXC_{presentation_curr}',gain_recorded]]
                                 )
         if xrate < xr_lastmonth: ## condition for loss in currency translation    
-            loss_in_Qcurr
+            loss_in_Qcurr = (xrate - xr_lastmonth) * base_val ## loss amount stated in the Quote currency
+            loss_in_Bcurr = loss_in_Qcurr / xr_lastmonth ## loss amount stated in the Base currency
+            if quote_curr == presentation_curr:
+                loss_recorded = loss_in_Qcurr
+            elif base_curr == presentation_curr:
+                loss_recorded = loss_in_Bcurr
+            else: ## neither QUOTE nor BASE is in the presentation currency (HKD), eg. CNY/USD pair
+                loss_recorded = loss_in_Qcurr * self.XR0_df.loc[presentation_curr, quote_curr]
             je_dfrow = pd.DataFrame(index=[idx],
-                                    columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'DR_account_1', 'DR_value_1'],
-                                    data=[[f'SFP_A_FA_E_{trxn_curr}_BV_{sec_code}', trxn_val, f'SCF_OA_PPI_{trxn_curr}_{sec_code}',trxn_val]]
+                                    columns=['DR_account_0', 'DR_value_0', 
+                                             'CR_account_0', 'CR_value_0', 
+                                             'DR_account_1', 'DR_value_1'],
+                                    data=[[f'SFP_A_CCE_{quote_curr}', quote_val,
+                                           f'SFP_A_CCE_{base_curr}', base_val,
+                                           f'SCI_XRPLFXC_{presentation_curr}',loss_recorded]]
                                     )
         if xrate == xr_lastmonth:
             je_dfrow = pd.DataFrame(index=[idx],
-                        columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'DR_account_1', 'DR_value_1'],
-                        data=[[f'SFP_A_FA_E_{trxn_curr}_BV_{sec_code}', trxn_val, f'SCF_OA_PPI_{trxn_curr}_{sec_code}',trxn_val]]
+                        columns=['DR_account_0', 'DR_value_0', 
+                                 'CR_account_0', 'CR_value_0'],
+                        data=[[f'SFP_A_CCE_{quote_curr}', quote_val,
+                               f'SFP_A_CCE_{base_curr}', base_val]]
                         )
             
         return je_dfrow      
