@@ -34,7 +34,7 @@ pd.set_option('display.max_rows', 20)
 # class TransactionLedgerMapping:
 
 class TransactionJEM:
-    def __init__(self, df, fillempty=''):
+    def __init__(self, df, XR0_df, XR1_df, fillempty=''):
         """
             🚀 include variables for exchange rates?
             🚀 use iterrows? for i,row in df.iterrows(): i becomes dfi row becomes dfrow
@@ -47,7 +47,9 @@ class TransactionJEM:
         self.df = df
         self.je_cols = self.df[[col for col in self.df.columns if col.startswith('DR') or col.startswith('CR')]] ## journal entry columns
         self.fillempty = fillempty ## empty string '' or None
-
+        self.XR0_df = XR0_df
+        self.XR1_df = XR1_df
+    
     def concat_je_rows(*dfs): ## variable-length arguments, *args 
         """
         Use as: 
@@ -267,7 +269,7 @@ class TransactionJEM:
                                 )
         return je_dfrow, description
         
-    def func_curr_tf(self, idx, xr_lastmonth):
+    def func_curr_tf(self, idx, xr_lastmonth, presentation_curr):
         transaction = self.df.iloc[idx]
         quote_val = transaction['Trxn_value'] ## quote (end-result) currency value
         quote_curr = transaction['Trxn_value_curr'] ## quote (end-result) currency
@@ -275,15 +277,27 @@ class TransactionJEM:
         base_curr = transaction['Trxn_quantity_unit'] ## base (original) currency
         xrate = transaction['Trxn_price'] ## exchange rate 
         xrate_curr = transaction['Trxn_price_curr'] ## exchange rate currency codes, QUOTE/BASE
-        xr_lastmonth = re.search(r'[\d.]+', xr_lastmonth)
-        xr_lastmonth = xr_lastmonth.group() if xr_lastmonth else None
+        xr_lastmonth = self.XR0_df.loc[quote_curr, base_curr]
         
         if xrate > xr_lastmonth: ## condition for gain in currency translation
-                je_dfrow = pd.DataFrame(index=[idx],
-                                columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'CR_account_1', 'CR_value_1'],
-                                data=[[f'SFP_A_FA_E_{trxn_curr}_BV_{sec_code}', trxn_val, f'SCF_OA_PPI_{trxn_curr}_{sec_code}',trxn_val]]
+            gain_in_Qcurr = (xrate - xr_lastmonth) * base_val
+            gain_in_Bcurr = gain_in_Qcurr / xr_lastmonth
+            if quote_curr == presentation_curr:
+                gain_recorded = gain_in_Qcurr
+            elif base_curr == presentation_curr:
+                gain_recorded = gain_in_Bcurr
+            else: ## neither QUOTE nor BASE is in the presentation currency (HKD), eg. CNY/USD pair
+                gain_recorded = gain_in_Qcurr * self.XR0_df.loc[presentation_curr, quote_curr]
+            je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0', 
+                                         'CR_account_1', 'CR_value_1'],
+                                data=[[f'SFP_A_CCE_{quote_curr}', quote_val,
+                                       f'SFP_A_CCE_{base_curr}', base_val,
+                                       f'SCI_XRPLFXC_{presentation_curr}',gain_recorded]]
                                 )
         if xrate < xr_lastmonth: ## condition for loss in currency translation    
+            loss_in_Qcurr
             je_dfrow = pd.DataFrame(index=[idx],
                                     columns=['DR_account_0', 'DR_value_0', 'CR_account_0', 'CR_value_0', 'DR_account_1', 'DR_value_1'],
                                     data=[[f'SFP_A_FA_E_{trxn_curr}_BV_{sec_code}', trxn_val, f'SCF_OA_PPI_{trxn_curr}_{sec_code}',trxn_val]]
