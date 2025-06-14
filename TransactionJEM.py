@@ -269,7 +269,7 @@ class TransactionJEM:
                                 )
         return je_dfrow, description
         
-    def func_curr_tf(self, idx, xr_lastmonth, presentation_curr):
+    def func_curr_tf(self, idx, presentation_curr):
         transaction = self.df.iloc[idx]
         quote_val = transaction['Trxn_value'] ## quote (end-result) currency value
         quote_curr = transaction['Trxn_value_curr'] ## quote (end-result) currency
@@ -323,8 +323,80 @@ class TransactionJEM:
             
         return je_dfrow      
         
-        
-        
+    def func_accn_tf(self, idx):
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        sec_code = transaction['Security_code']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCI_E_TF_{trxn_curr}', trxn_val, 
+                                       f'SCF_OA_OEP_{trxn_curr}', trxn_val]]
+                                )
+        return je_dfrow      
+
+    def func_sub(self, idx):
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCF_FA_SR_{trxn_curr}', trxn_val, 
+                                       f'SCNAV_SUB_{trxn_curr}', trxn_val]]
+                                )
+        return je_dfrow     
+
+    def func_red(self, idx):
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCNAV_RED_{trxn_curr}', trxn_val, 
+                                       f'SCF_FA_RP_{trxn_curr}', trxn_val]]
+                                )
+        return je_dfrow  
+
+    def func_bank_fee(self, idx):
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCI_E_AF_{trxn_curr}', trxn_val, 
+                                       f'SCF_OA_OEP_{trxn_curr}', trxn_val]]
+                                )
+        return je_dfrow  
+
+    def func_bank_rebate(self, idx):
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCF_OA_OEP_{trxn_curr}', trxn_val, 
+                                       f'SCI_E_AF_{trxn_curr}', trxn_val]]
+                                )
+        return je_dfrow  
+
+    def func_ADR_fee(self, idx): ## ADR 管理费
+        transaction = self.df.iloc[idx]
+        trxn_val = transaction['Trxn_value']
+        trxn_curr = transaction['Trxn_value_curr']
+        je_dfrow = pd.DataFrame(index=[idx],
+                                columns=['DR_account_0', 'DR_value_0', 
+                                         'CR_account_0', 'CR_value_0'],
+                                data=[[f'SCI_E_OF_{trxn_curr}', trxn_val, 
+                                       f'SCF_OA_OEP_{trxn_curr}', trxn_val]]
+                                )
+
+    
+    
     def func_FAE_mtmadj(self, df):  ## month-to-month adjustments ## 月末调整
         ## this does not require iterating through the df
         ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
