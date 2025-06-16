@@ -573,8 +573,4 @@ def func_FAOL_close(self, idx, exp, ae, exe, cs, cp,
 
     
     
-    def func_FAE_mtmadj(self, df):  ## month-to-month adjustments ## 月末调整
-        ## this does not require iterating through the df
-        ## considering writing this function under another class called 'IS monthly/periodic adjustments' or something
-    
-    def tabulate_ledgers(self):
+
