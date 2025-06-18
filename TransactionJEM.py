@@ -100,9 +100,7 @@ class TransactionJEM:
                                 )
         return je_dfrow      
 
-    def func_FAE_close(self, idx, exp, ae, exe, cs, cp, 
-                        avgbp_t0, unitsheld_t0, SFP_A_FA_O_curr_CUM_UGLΔFV_t0, 
-                        underlying_sec_code): ## close financial asset equity ## 平仓金融资产权益
+    def func_FAE_close(self, idx, avgbp_t0, unitsheld_t0, SFP_A_FA_E_curr_CUM_UGLΔFV_t0): ## close financial asset equity ## 平仓金融资产权益
         ## avgbp_t0 = average book price (per share) from last period; this is also specific to the exact security
         ## unitsheld_t0 = number of units of security (shares) held on the books in the last period; this is also specific to the exact security
         ## SFP_A_FA_E_curr_CUM_UGLΔFV_t0 = cumulative unrealized gain or loss at fair value from last period (this is an adjunct asset account); this is also specific to the exact security
